@@ -31,5 +31,5 @@ func (dg *DiggerSite) Text() string {
 
 // Sets the digger site meta data in the input outlog. Outputs a non nil error when the digger site token does not conform to the meta data section of a massif log file
 func (dg *DiggerSite) MetaData(log *outlog.OutLog) error {
-
+	return nil
 }
