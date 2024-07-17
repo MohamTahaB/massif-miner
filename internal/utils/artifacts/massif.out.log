@@ -1,4 +1,4 @@
-desc: --massif-out-file=massif.out
+desc: --massif-out-file=massif.out.log
 cmd: ./alloc_dealloc
 time_unit: i
 #-----------
