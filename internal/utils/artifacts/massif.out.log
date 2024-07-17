@@ -1,0 +1,591 @@
+desc: --massif-out-file=massif.out
+cmd: ./alloc_dealloc
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=2279725
+mem_heap_B=72704
+mem_heap_extra_B=8
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=2395029
+mem_heap_B=73674
+mem_heap_extra_B=22
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=2518705
+mem_heap_B=85981
+mem_heap_extra_B=443
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=2627970
+mem_heap_B=94992
+mem_heap_extra_B=768
+mem_stacks_B=0
+heap_tree=detailed
+n3: 94992 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 21776 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 21776 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n0: 512 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=5
+#-----------
+time=2745961
+mem_heap_B=88594
+mem_heap_extra_B=710
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=2949238
+mem_heap_B=89906
+mem_heap_extra_B=758
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=3102609
+mem_heap_B=95272
+mem_heap_extra_B=792
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=3244603
+mem_heap_B=89830
+mem_heap_extra_B=458
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=3436291
+mem_heap_B=90346
+mem_heap_extra_B=686
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=3556963
+mem_heap_B=88075
+mem_heap_extra_B=445
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=3670518
+mem_heap_B=103323
+mem_heap_extra_B=989
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=3848910
+mem_heap_B=100871
+mem_heap_extra_B=985
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=3978532
+mem_heap_B=110512
+mem_heap_extra_B=1224
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=4181137
+mem_heap_B=114105
+mem_heap_extra_B=1647
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=4326624
+mem_heap_B=133730
+mem_heap_extra_B=2078
+mem_stacks_B=0
+heap_tree=detailed
+n3: 133730 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 60002 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 60002 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n0: 1024 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=16
+#-----------
+time=4504659
+mem_heap_B=142132
+mem_heap_extra_B=2452
+mem_stacks_B=0
+heap_tree=detailed
+n3: 142132 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 67380 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 67380 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=17
+#-----------
+time=4712455
+mem_heap_B=136280
+mem_heap_extra_B=2280
+mem_stacks_B=0
+heap_tree=detailed
+n3: 136280 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 61528 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 61528 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=18
+#-----------
+time=4837443
+mem_heap_B=132464
+mem_heap_extra_B=2064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=5024794
+mem_heap_B=134585
+mem_heap_extra_B=2239
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=5170901
+mem_heap_B=123213
+mem_heap_extra_B=1643
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=5272032
+mem_heap_B=118263
+mem_heap_extra_B=1585
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=5406887
+mem_heap_B=110540
+mem_heap_extra_B=1332
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=5576106
+mem_heap_B=116919
+mem_heap_extra_B=1473
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=5712237
+mem_heap_B=115425
+mem_heap_extra_B=1591
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=5915277
+mem_heap_B=129111
+mem_heap_extra_B=2121
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=6051001
+mem_heap_B=141069
+mem_heap_extra_B=2227
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=6178281
+mem_heap_B=156444
+mem_heap_extra_B=2652
+mem_stacks_B=0
+heap_tree=detailed
+n3: 156444 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 81692 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 81692 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=28
+#-----------
+time=6348571
+mem_heap_B=153260
+mem_heap_extra_B=2772
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=6517746
+mem_heap_B=141841
+mem_heap_extra_B=2375
+mem_stacks_B=0
+heap_tree=detailed
+n3: 141841 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 67089 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 67089 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=30
+#-----------
+time=6720658
+mem_heap_B=147521
+mem_heap_extra_B=2591
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=6850728
+mem_heap_B=155441
+mem_heap_extra_B=2855
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=6965563
+mem_heap_B=142896
+mem_heap_extra_B=2488
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=7079871
+mem_heap_B=126804
+mem_heap_extra_B=2028
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=7251556
+mem_heap_B=141189
+mem_heap_extra_B=2411
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=7423652
+mem_heap_B=137075
+mem_heap_extra_B=2237
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=7538535
+mem_heap_B=149795
+mem_heap_extra_B=2509
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=7652604
+mem_heap_B=141534
+mem_heap_extra_B=2370
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=7766721
+mem_heap_B=138095
+mem_heap_extra_B=2209
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=7880584
+mem_heap_B=147686
+mem_heap_extra_B=2450
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=7994806
+mem_heap_B=144492
+mem_heap_extra_B=2620
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=8166710
+mem_heap_B=146070
+mem_heap_extra_B=2762
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=8281686
+mem_heap_B=138120
+mem_heap_extra_B=2360
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=8395345
+mem_heap_B=138732
+mem_heap_extra_B=2420
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=8566958
+mem_heap_B=142718
+mem_heap_extra_B=2330
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=8755830
+mem_heap_B=165527
+mem_heap_extra_B=3017
+mem_stacks_B=0
+heap_tree=peak
+n3: 165527 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 90775 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 90775 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=46
+#-----------
+time=8870615
+mem_heap_B=157074
+mem_heap_extra_B=2838
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=9042139
+mem_heap_B=148115
+mem_heap_extra_B=2493
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=9214545
+mem_heap_B=141908
+mem_heap_extra_B=2340
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=9386956
+mem_heap_B=137333
+mem_heap_extra_B=2067
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=9488337
+mem_heap_B=136328
+mem_heap_extra_B=2064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=9590412
+mem_heap_B=131718
+mem_heap_extra_B=1890
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=9691971
+mem_heap_B=134951
+mem_heap_extra_B=2161
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=9793519
+mem_heap_B=125937
+mem_heap_extra_B=1855
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=9895101
+mem_heap_B=128820
+mem_heap_extra_B=2004
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=9996945
+mem_heap_B=130228
+mem_heap_extra_B=1908
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=10098246
+mem_heap_B=126058
+mem_heap_extra_B=1926
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=10200469
+mem_heap_B=124273
+mem_heap_extra_B=1943
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=10302672
+mem_heap_B=124177
+mem_heap_extra_B=1767
+mem_stacks_B=0
+heap_tree=detailed
+n3: 124177 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 72704 0x490D939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+  n1: 72704 0x400647D: call_init.part.0 (dl-init.c:70)
+   n1: 72704 0x4006567: call_init (dl-init.c:33)
+    n1: 72704 0x4006567: _dl_init (dl-init.c:117)
+     n0: 72704 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n1: 49425 0x109403: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+  n0: 49425 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+ n1: 2048 0x10A5EF: __gnu_cxx::new_allocator<void*>::allocate(unsigned long, void const*) (in /home/taha/internship/testdir/alloc_dealloc)
+  n1: 2048 0x10A42E: std::allocator_traits<std::allocator<void*> >::allocate(std::allocator<void*>&, unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+   n1: 2048 0x10A2AD: std::_Vector_base<void*, std::allocator<void*> >::_M_allocate(unsigned long) (in /home/taha/internship/testdir/alloc_dealloc)
+    n1: 2048 0x109D90: void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+     n1: 2048 0x109877: std::vector<void*, std::allocator<void*> >::push_back(void* const&) (in /home/taha/internship/testdir/alloc_dealloc)
+      n1: 2048 0x109427: allocateAndDeallocate() (in /home/taha/internship/testdir/alloc_dealloc)
+       n0: 2048 0x109596: main (in /home/taha/internship/testdir/alloc_dealloc)
+#-----------
+snapshot=59
+#-----------
+time=10413223
+mem_heap_B=1024
+mem_heap_extra_B=8
+mem_stacks_B=0
+heap_tree=empty
