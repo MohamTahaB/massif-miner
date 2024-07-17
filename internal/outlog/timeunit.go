@@ -7,5 +7,6 @@ type TimeUnit int
 const (
 	I TimeUnit = iota
 	B
-	A
+	MS
+	AUTO
 )
