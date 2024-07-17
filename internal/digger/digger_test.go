@@ -1,6 +1,7 @@
 package digger
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -65,13 +66,13 @@ func TestMetaData_OK(t *testing.T) {
 
 	// Check metadata
 	if outLog.Desc != "--massif.out" {
-		t.Fatalf("metadata error: incorrect desc, expected --massif.out, found %s", outLog.Desc)
+		t.Fatalf("metadata test error: incorrect desc, expected --massif.out, found %s", outLog.Desc)
 	}
 	if outLog.Cmd != "./file/path" {
-		t.Fatalf("metadata error: incorrect cmd, expected ./file/path, found %s", outLog.Cmd)
+		t.Fatalf("metadata test error: incorrect cmd, expected ./file/path, found %s", outLog.Cmd)
 	}
 	if outLog.TimeUnit != outlog.I {
-		t.Fatalf("metadata error: incorrect time unit, expected i")
+		t.Fatalf("metadata test error: incorrect time unit, expected i")
 	}
 }
 
@@ -80,7 +81,27 @@ func TestMetaData_ERR(t *testing.T) {
 
 }
 
-// TODO!
 func TestMetaDataOnMassifLog_OK(t *testing.T) {
 
+	// Open the massif.out log in the artifacts
+	file, err := os.Open("../utils/artifacts/massif.out.log")
+	if err != nil {
+		t.Fatalf("error opening the massif.out log: %v", err)
+	}
+
+	defer file.Close()
+
+	// Init digger site and outlog
+	dg := InitDiggerSite(file)
+	ol := outlog.OutLog{}
+
+	if err = dg.MetaData(&ol); err != nil {
+		t.Fatalf("metadata test error: error reading from the massif.out: %v", err)
+	}
+
+	// Check whether the info are correct.
+	// CAUTION: change in the artifacts should be taken into account here as well
+	if ol.Desc != "--massif-out-file=massif.out.log" || ol.Cmd != "./alloc_dealloc" || ol.TimeUnit != outlog.I {
+		t.Fatal("metadata test error: the values of the log metadata are not as expected")
+	}
 }
