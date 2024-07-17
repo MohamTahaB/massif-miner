@@ -1,0 +1,30 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go-version: ['1.16', '1.17', '1.18'] # Test against multiple Go versions
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Install dependencies
+      run: go mod tidy
+
+    - name: Run tests
+      run: go test ./...
