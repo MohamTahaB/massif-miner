@@ -6,7 +6,16 @@ on:
   pull_request:
     branches: [ main ]
 
+  workflow_dispatch:
+
 jobs:
+  cli-gitpod:
+    name: CLI and Gitpod Demo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Hello From Gitpod
+      run: |
+        echo "Hello! From Gitpod 🍊"
   test:
     runs-on: ubuntu-latest
 
