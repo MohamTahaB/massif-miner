@@ -1,6 +1,7 @@
 package digger
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -76,8 +77,35 @@ func TestMetaData_OK(t *testing.T) {
 	}
 }
 
-// TODO : make a test suite for all plausible metadata errors
-func TestMetaData_ERR(t *testing.T) {
+func TestMetaData_AllTimeUnits_OK(t *testing.T) {
+
+	// Init the UTests struct
+	type uTest struct {
+		timeUnit         string
+		expectedTimeUnit outlog.TimeUnit
+	}
+
+	var uTests = []uTest{
+		{"i", outlog.I},
+		{"B", outlog.B},
+		{"ms", outlog.MS},
+		{"auto", outlog.AUTO},
+	}
+
+	var ol outlog.OutLog
+	var diggerSite DiggerSite
+	for _, test := range uTests {
+		ol = outlog.OutLog{}
+		diggerSite = InitDiggerSite(strings.NewReader(fmt.Sprintf("desc: --massif.out\ncmd: ./file/path\ntime_unit: %s\n", test.timeUnit)))
+		if err := diggerSite.MetaData(&ol); err != nil {
+			t.Fatalf("metadata test error: %v", err)
+		}
+
+		// Check the time unit
+		if ol.TimeUnit != test.expectedTimeUnit {
+			t.Fatal("metadata test error: unexpected time unit")
+		}
+	}
 
 }
 
