@@ -9,4 +9,3 @@ type OutLog struct {
 	TimeUnit  TimeUnit            `json:"timeUnit"`
 	Snapshots []snapshot.Snapshot `json:"snapshots"`
 }
-
