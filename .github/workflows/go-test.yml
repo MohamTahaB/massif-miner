@@ -1,4 +1,4 @@
-name: Go
+name: Go-tests
 
 on:
   push:
@@ -6,15 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
-  workflow_dispatch:
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        go-version: ['1.16', '1.17', '1.18'] # Test against multiple Go versions
 
     steps:
     - name: Checkout code
@@ -23,7 +17,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: '1.22'
 
     - name: Install dependencies
       run: go mod tidy
