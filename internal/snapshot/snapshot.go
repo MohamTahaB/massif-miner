@@ -10,8 +10,6 @@ type Snapshot struct {
 	Time          int `json:"time"`
 	MemHeapB      int `json:"memHeapB"`
 	MemHeapExtraB int `json:"memHeapExtraB"`
-	MemStacks     int `json:"memStacks"`
+	MemStacksB    int `json:"memStacks"`
 	HeapTree      heaptree.HeapTree
 }
-
-
