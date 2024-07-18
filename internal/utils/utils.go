@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 // Extracts the value from a line of the form "label=value"
@@ -24,4 +25,14 @@ func ExtractValueOf(label string, line string, valueIsANumber bool) (string, err
 	}
 
 	return stringSubmatches[1], nil
+}
+
+func LeadingSpaces(s string) (string, int) {
+	for i := 0; i < len(s); i++ {
+		if s[i] != ' ' {
+			return strings.TrimLeft(s, " "), i
+		}
+	}
+
+	return "", len(s)
 }
