@@ -15,13 +15,17 @@ import (
 
 // A struct that wraps around a bufio scanner, in order to define member funcs and be able to add snapshots sequentially
 type DiggerSite struct {
-	Scanner *bufio.Scanner
+	Scanner  *bufio.Scanner
+	HTreeCtx heaptree.HeapTreeDepthCtx
 }
 
 // Initiates a digger site instance, from an io reader passed as input
 func InitDiggerSite(r io.Reader) DiggerSite {
 	return DiggerSite{
 		Scanner: bufio.NewScanner(r),
+		HTreeCtx: heaptree.HeapTreeDepthCtx{
+			HTreeDepth: make(map[int]*heaptree.HeapTree),
+		},
 	}
 }
 
@@ -98,28 +102,41 @@ func (dg *DiggerSite) MetaData(log *outlog.OutLog) error {
 	log.Desc = desc
 	log.TimeUnit = timeUnit
 
+	delimiter := "#-----------"
+
+	// Case when there are snapshots: the first delimiter is met
+	nextScan := dg.Scan()
+
+	if !nextScan && dg.Scanner.Err() != nil {
+		return fmt.Errorf("metadata error: %v", dg.Scanner.Err())
+	}
+
+	if !nextScan || (nextScan && dg.Text() == delimiter) {
+		return nil
+	}
+
+	return fmt.Errorf("metadata error: issue with first line following metadata")
+}
+
+// Advances the digger site to the following line
+// Returns potential scanning errors
+func (dg *DiggerSite) AdvanceLine() error {
+	if !dg.Scan() {
+		return fmt.Errorf("error advancing the digger site: %v", dg.Scanner.Err())
+	}
 	return nil
 }
 
 // Fetches info related to the snapshot chunk the scanner token is supposed to be at
 func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 
-	var ss snapshot.Snapshot
+	log.Snapshots = append(log.Snapshots, snapshot.Snapshot{})
+	ss := &log.Snapshots[len(log.Snapshots)-1]
 	delimiter := "#-----------"
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
-	}
-
-	// a delimiter is expected
-	if dg.Text() != delimiter {
-		return fmt.Errorf("snapshot error: a delimiter is expected at the beginning of the snapshot")
-	}
-
-	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// Expect a line of the form "snapshot=id"
@@ -135,8 +152,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// a delimiter is expected
@@ -145,8 +162,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// Expect the time
@@ -160,8 +177,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// expect the mem_heap_B
@@ -175,8 +192,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// expect the mem_heap_B
@@ -190,8 +207,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// expect the mem_heap_B
@@ -205,8 +222,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 	}
 
 	// Handle scanning issues
-	if !dg.Scan() {
-		return fmt.Errorf("snapshot error: could not scan when fetching snapshot")
+	if err := dg.AdvanceLine(); err != nil {
+		return fmt.Errorf("snapshot error: %v", err)
 	}
 
 	// expect the mem_heap_B
@@ -215,9 +232,94 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) error {
 		return fmt.Errorf("snapshot error: %v", err)
 	}
 
-	if heapTreeVal == "detailed" {
-		//TODO! find a solution for heap trees
-		ss.HeapTree = heaptree.HeapTree{}
+	ss.IsPeak = false
+	if heapTreeVal == "detailed" || heapTreeVal == "peak" {
+
+		if heapTreeVal == "peak" {
+			ss.IsPeak = true
+		}
+
+		rootRegex := regexp.MustCompile(`^n(\d+): (\d+) \(([^)]+)\)`)
+		descendenceRegex := regexp.MustCompile(`^n(\d+): (\d+) ([0-9A-Fa-fx]+): (.*?) \((?:in ([^)]*)|([^)]*))\)`)
+		belowThresholdRegex := regexp.MustCompile(`.*below massif's threshold.*`)
+
+		for {
+			nextLine := dg.Scan()
+			// Stop if the delimiter is found, or EOF
+			if (nextLine && dg.Text() == delimiter) || (!nextLine && dg.Scanner.Err() == nil) {
+				break
+			} else if !nextLine {
+				return fmt.Errorf("snapshot error: %v", dg.Scanner.Err())
+			}
+
+			// Check the depth of the current line of the heap tree
+			htLine, depth := utils.LeadingSpaces(dg.Text())
+
+			if belowThresholdRegex.MatchString(htLine) {
+				continue
+			}
+
+			// Root of the Heap Tree
+			if depth == 0 {
+				dg.HTreeCtx.HTreeDepth[0] = &ss.HeapTree
+				match := rootRegex.FindStringSubmatch(htLine)
+
+				// Check if the line has the root id, the mem size and the func desc
+				if len(match) < 4 {
+					return fmt.Errorf("snapshot error: unsufficient args for the root htree line: %s", htLine)
+				}
+
+				ss.HeapTree.ID, err = strconv.Atoi(match[1])
+				// Handle conversion error
+				if err != nil {
+					return fmt.Errorf("snapshot error: conversion error")
+				}
+
+				ss.HeapTree.Address = "root"
+				ss.HeapTree.Memory, err = strconv.Atoi(match[2])
+				// Handle conversion error
+				if err != nil {
+					return fmt.Errorf("snapshot error: conversion error")
+				}
+				ss.HeapTree.Func = match[3]
+				ss.HeapTree.FuncFullDesc = match[3]
+			} else {
+				// Depth is strictly positive, a node with depth n belongs to the htree decendence of the last seen leaf of depth n-1
+				newHeapTreeEntry := &heaptree.HeapTree{}
+
+				dg.HTreeCtx.HTreeDepth[depth] = newHeapTreeEntry
+
+				match := descendenceRegex.FindStringSubmatch(htLine)
+
+				// Check if the line has all expected info
+				if len(match) < 6 {
+					return fmt.Errorf("snapshot error: unsufficient args for the following htree line: %s, %v", htLine, match)
+				}
+
+				newHeapTreeEntry.ID, err = strconv.Atoi(match[1])
+				// Handle conversion error
+				if err != nil {
+					return fmt.Errorf("snapshot error: conversion error")
+				}
+
+				newHeapTreeEntry.Memory, err = strconv.Atoi(match[2])
+				// Handle conversion error
+				if err != nil {
+					return fmt.Errorf("snapshot error: conversion error")
+				}
+				newHeapTreeEntry.Address = match[3]
+				newHeapTreeEntry.Func = match[4]
+				newHeapTreeEntry.FuncFullDesc = match[5]
+
+				// Add this node to the list of the descendences of the last seen node of depth -1
+				dg.HTreeCtx.HTreeDepth[depth-1].Htree = append(dg.HTreeCtx.HTreeDepth[depth-1].Htree, newHeapTreeEntry)
+			}
+		}
+	} else {
+		nextLine := dg.Scan()
+		if (!nextLine && dg.Scanner.Err() == nil) && (nextLine && dg.Text() != delimiter) {
+			return fmt.Errorf("snapshot error: expected a delimiter or EOF")
+		}
 	}
 
 	return nil

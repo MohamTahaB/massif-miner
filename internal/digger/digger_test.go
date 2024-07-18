@@ -133,3 +133,35 @@ func TestMetaDataOnMassifLog_OK(t *testing.T) {
 		t.Fatal("metadata test error: the values of the log metadata are not as expected")
 	}
 }
+
+func TestSnapshotOnMassifLog_OK(t *testing.T) {
+
+	// Open the massif.out log in the artifacts
+	file, err := os.Open("../utils/artifacts/massif.out.log")
+	if err != nil {
+		t.Fatalf("error opening the massif.out log: %v", err)
+	}
+
+	defer file.Close()
+
+	// Init digger site and outlog
+	dg := InitDiggerSite(file)
+	ol := outlog.OutLog{}
+
+	if err = dg.MetaData(&ol); err != nil {
+		t.Fatalf("snapshot test error: error reading from the massif.out: %v", err)
+	}
+
+	// Check whether the info are correct.
+	// CAUTION: change in the artifacts should be taken into account here as well
+	if ol.Desc != "--massif-out-file=massif.out.log" || ol.Cmd != "./alloc_dealloc" || ol.TimeUnit != outlog.I {
+		t.Fatal("snapshot test error: the values of the log metadata are not as expected")
+	}
+
+	for i := 0; i < 60; i++ {
+		err = dg.FetchSnapshot(&ol)
+		if err != nil {
+			t.Fatalf("snapshot error at iter %d: %v", i, err)
+		}
+	}
+}
