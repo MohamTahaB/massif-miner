@@ -11,5 +11,6 @@ type Snapshot struct {
 	MemHeapB      int `json:"memHeapB"`
 	MemHeapExtraB int `json:"memHeapExtraB"`
 	MemStacksB    int `json:"memStacks"`
-	HeapTree      heaptree.HeapTree
+	HeapTree      *heaptree.HeapTree
+	IsPeak        bool
 }

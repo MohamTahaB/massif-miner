@@ -5,19 +5,27 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strconv"
 
+	"github.com/MohamTahaB/massif-miner/internal/heaptree"
 	"github.com/MohamTahaB/massif-miner/internal/outlog"
+	"github.com/MohamTahaB/massif-miner/internal/snapshot"
+	"github.com/MohamTahaB/massif-miner/internal/utils"
 )
 
 // A struct that wraps around a bufio scanner, in order to define member funcs and be able to add snapshots sequentially
 type DiggerSite struct {
-	Scanner *bufio.Scanner
+	Scanner  *bufio.Scanner
+	HTreeCtx heaptree.HeapTreeDepthCtx
 }
 
 // Initiates a digger site instance, from an io reader passed as input
 func InitDiggerSite(r io.Reader) DiggerSite {
 	return DiggerSite{
 		Scanner: bufio.NewScanner(r),
+		HTreeCtx: heaptree.HeapTreeDepthCtx{
+			HTreeDepth: make(map[int]*heaptree.HeapTree),
+		},
 	}
 }
 
@@ -94,5 +102,242 @@ func (dg *DiggerSite) MetaData(log *outlog.OutLog) error {
 	log.Desc = desc
 	log.TimeUnit = timeUnit
 
+	delimiter := "#-----------"
+
+	// Case when there are snapshots: the first delimiter is met
+
+	if err := dg.AdvanceLine(); err != nil {
+		if dg.Scanner.Err() != nil {
+			return fmt.Errorf("metadata error: %v", dg.Scanner.Err())
+		}
+
+		// at EOF
+		return nil
+	}
+
+	if dg.Text() == delimiter {
+		return nil
+	}
+
+	return fmt.Errorf("metadata error: issue with first line following metadata")
+}
+
+// Advances the digger site to the following line
+// Returns potential scanning errors
+func (dg *DiggerSite) AdvanceLine() error {
+	if !dg.Scan() {
+		return fmt.Errorf("error advancing the digger site: %v", dg.Scanner.Err())
+	}
 	return nil
+}
+
+// Fetches info related to the snapshot chunk the scanner token is supposed to be at.
+// Returns a bool (whether the digger site is at EOF), and an error, if encountered
+func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) (bool, error) {
+
+	// TODO! consider that in case there are no snapshots, the log snapshots slice will contain an extra empty snapshot
+	ss := snapshot.Snapshot{}
+	delimiter := "#-----------"
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		// Two possible cases, either at EOF, or at an error that should be reported
+		if dg.Scanner.Err() != nil {
+			return false, fmt.Errorf("snapshot error: %v", err)
+		} else {
+			return true, nil
+		}
+	}
+
+	// Expect a line of the form "snapshot=id"
+	var snapshotIDStr string
+	var err error
+
+	if snapshotIDStr, err = utils.ExtractValueOf("snapshot", dg.Text(), true); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	if ss.Id, err = strconv.Atoi(snapshotIDStr); err != nil {
+		return false, fmt.Errorf("snapshot error when converting a string: %v", err)
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// a delimiter is expected
+	if dg.Text() != delimiter {
+		return false, fmt.Errorf("snapshot error: a delimiter is expected at the beginning of the snapshot")
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// Expect the time
+	var timeVal string
+	if timeVal, err = utils.ExtractValueOf("time", dg.Text(), true); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	if ss.Time, err = strconv.Atoi(timeVal); err != nil {
+		return false, fmt.Errorf("snapshot error when converting a string: %v", err)
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// expect the mem_heap_B
+	var memHeapVal string
+	if memHeapVal, err = utils.ExtractValueOf("mem_heap_B", dg.Text(), true); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	if ss.MemHeapB, err = strconv.Atoi(memHeapVal); err != nil {
+		return false, fmt.Errorf("snapshot error when converting a string: %v", err)
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// expect the mem_heap_B
+	var memHeapExtraVal string
+	if memHeapExtraVal, err = utils.ExtractValueOf("mem_heap_extra_B", dg.Text(), true); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	if ss.MemHeapExtraB, err = strconv.Atoi(memHeapExtraVal); err != nil {
+		return false, fmt.Errorf("snapshot error when converting a string: %v", err)
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// expect the mem_heap_B
+	var memStacksVal string
+	if memStacksVal, err = utils.ExtractValueOf("mem_stacks_B", dg.Text(), true); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	if ss.MemStacksB, err = strconv.Atoi(memStacksVal); err != nil {
+		return false, fmt.Errorf("snapshot error when converting a string: %v", err)
+	}
+
+	// Handle scanning issues
+	if err := dg.AdvanceLine(); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	// expect the mem_heap_B
+	var heapTreeVal string
+	if heapTreeVal, err = utils.ExtractValueOf("heap_tree", dg.Text(), false); err != nil {
+		return false, fmt.Errorf("snapshot error: %v", err)
+	}
+
+	ss.IsPeak = false
+	var atEOF bool
+	if heapTreeVal == "detailed" || heapTreeVal == "peak" {
+
+		ss.HeapTree = &heaptree.HeapTree{}
+
+		if heapTreeVal == "peak" {
+			ss.IsPeak = true
+		}
+
+		rootRegex := regexp.MustCompile(`^n(\d+): (\d+) \(([^)]+)\)`)
+		descendenceRegex := regexp.MustCompile(`^n(\d+): (\d+) ([0-9A-Fa-fx]+): (.*?) \((?:in ([^)]*)|([^)]*))\)`)
+		belowThresholdRegex := regexp.MustCompile(`.*below massif's threshold.*`)
+
+		for {
+			nextLine := dg.Scan()
+			// Stop if the delimiter is found, or EOF
+			if atEOF = (!nextLine && dg.Scanner.Err() == nil); atEOF {
+				break
+			}
+			if (nextLine && dg.Text() == delimiter) || atEOF {
+				break
+			} else if !nextLine {
+				return false, fmt.Errorf("snapshot error: %v", dg.Scanner.Err())
+			}
+
+			// Check the depth of the current line of the heap tree
+			htLine, depth := utils.LeadingSpaces(dg.Text())
+
+			if belowThresholdRegex.MatchString(htLine) {
+				continue
+			}
+
+			// Root of the Heap Tree
+			if depth == 0 {
+				dg.HTreeCtx.HTreeDepth[0] = ss.HeapTree
+				match := rootRegex.FindStringSubmatch(htLine)
+
+				// Check if the line has the root id, the mem size and the func desc
+				if len(match) < 4 {
+					return false, fmt.Errorf("snapshot error: unsufficient args for the root htree line: %s", htLine)
+				}
+
+				ss.HeapTree.ID, err = strconv.Atoi(match[1])
+				// Handle conversion error
+				if err != nil {
+					return false, fmt.Errorf("snapshot error: conversion error")
+				}
+
+				ss.HeapTree.Address = "root"
+				ss.HeapTree.Memory, err = strconv.Atoi(match[2])
+				// Handle conversion error
+				if err != nil {
+					return false, fmt.Errorf("snapshot error: conversion error")
+				}
+				ss.HeapTree.Func = match[3]
+				ss.HeapTree.FuncFullDesc = match[3]
+			} else {
+				// Depth is strictly positive, a node with depth n belongs to the htree decendence of the last seen leaf of depth n-1
+				newHeapTreeEntry := &heaptree.HeapTree{}
+
+				dg.HTreeCtx.HTreeDepth[depth] = newHeapTreeEntry
+
+				match := descendenceRegex.FindStringSubmatch(htLine)
+
+				// Check if the line has all expected info
+				if len(match) < 6 {
+					return false, fmt.Errorf("snapshot error: unsufficient args for the following htree line: %s, %v", htLine, match)
+				}
+
+				newHeapTreeEntry.ID, err = strconv.Atoi(match[1])
+				// Handle conversion error
+				if err != nil {
+					return false, fmt.Errorf("snapshot error: conversion error")
+				}
+
+				newHeapTreeEntry.Memory, err = strconv.Atoi(match[2])
+				// Handle conversion error
+				if err != nil {
+					return false, fmt.Errorf("snapshot error: conversion error")
+				}
+				newHeapTreeEntry.Address = match[3]
+				newHeapTreeEntry.Func = match[4]
+				newHeapTreeEntry.FuncFullDesc = match[5]
+
+				// Add this node to the list of the descendences of the last seen node of depth -1
+				dg.HTreeCtx.HTreeDepth[depth-1].HeapAllocationLeafs = append(dg.HTreeCtx.HTreeDepth[depth-1].HeapAllocationLeafs, newHeapTreeEntry)
+			}
+		}
+	} else {
+		nextLine := dg.Scan()
+		if (!nextLine && dg.Scanner.Err() == nil) && (nextLine && dg.Text() != delimiter) {
+			return false, fmt.Errorf("snapshot error: expected a delimiter or EOF")
+		}
+	}
+	log.Snapshots = append(log.Snapshots, ss)
+	return atEOF, nil
+
 }
