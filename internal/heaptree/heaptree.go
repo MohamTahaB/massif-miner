@@ -2,12 +2,12 @@ package heaptree
 
 // Define the heap tree struct to be implemented in the detailed snapshots
 type HeapTree struct {
-	ID           int
-	Memory       int
-	Address      string
-	Func         string
-	FuncFullDesc string
-	Htree        []*HeapTree
+	ID                  int
+	Memory              int
+	Address             string
+	Func                string
+	FuncFullDesc        string
+	HeapAllocationLeafs []*HeapTree
 }
 
 type HeapTreeDepthCtx struct {

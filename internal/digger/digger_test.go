@@ -158,10 +158,17 @@ func TestSnapshotOnMassifLog_OK(t *testing.T) {
 		t.Fatal("snapshot test error: the values of the log metadata are not as expected")
 	}
 
-	for i := 0; i < 60; i++ {
-		err = dg.FetchSnapshot(&ol)
-		if err != nil {
-			t.Fatalf("snapshot error at iter %d: %v", i, err)
+	var atEOF bool
+	i := 0
+
+	for {
+		atEOF, err = dg.FetchSnapshot(&ol)
+		if atEOF {
+			break
 		}
+		if err != nil {
+			t.Fatalf("snapshot test error at iter %d: %v", i, err)
+		}
+		i++
 	}
 }
