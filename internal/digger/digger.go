@@ -136,8 +136,7 @@ func (dg *DiggerSite) AdvanceLine() error {
 func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) (bool, error) {
 
 	// TODO! consider that in case there are no snapshots, the log snapshots slice will contain an extra empty snapshot
-	log.Snapshots = append(log.Snapshots, snapshot.Snapshot{})
-	ss := &log.Snapshots[len(log.Snapshots)-1]
+	ss := snapshot.Snapshot{}
 	delimiter := "#-----------"
 
 	// Handle scanning issues
@@ -247,6 +246,8 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) (bool, error) {
 	var atEOF bool
 	if heapTreeVal == "detailed" || heapTreeVal == "peak" {
 
+		ss.HeapTree = &heaptree.HeapTree{}
+
 		if heapTreeVal == "peak" {
 			ss.IsPeak = true
 		}
@@ -276,7 +277,7 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) (bool, error) {
 
 			// Root of the Heap Tree
 			if depth == 0 {
-				dg.HTreeCtx.HTreeDepth[0] = &ss.HeapTree
+				dg.HTreeCtx.HTreeDepth[0] = ss.HeapTree
 				match := rootRegex.FindStringSubmatch(htLine)
 
 				// Check if the line has the root id, the mem size and the func desc
@@ -336,7 +337,7 @@ func (dg *DiggerSite) FetchSnapshot(log *outlog.OutLog) (bool, error) {
 			return false, fmt.Errorf("snapshot error: expected a delimiter or EOF")
 		}
 	}
-
+	log.Snapshots = append(log.Snapshots, ss)
 	return atEOF, nil
 
 }
